@@ -1,71 +1,89 @@
-:root {
-  --size: 320px;
-  --border: 8px;
-}
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap");
 
-body {
+html,
+body,
+#root {
   margin: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(120deg, #00111f, #051933, #120033);
+  background-size: 400% 400%;
+  animation: gradientShift 16s ease infinite;
   display: flex;
-  height: 100vh;
-  align-items: center;
   justify-content: center;
-  background: #0f172a;
-  font-family: system-ui, sans-serif;
+  align-items: center;
+  font-family: "Orbitron", sans-serif;
+  overflow: hidden;
 }
 
 .clock {
-  width: var(--size);
-  height: var(--size);
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 20%, #0b1220 0%, #071029 40%, #06101a 100%);
-  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.7),
-    inset 0 6px 18px rgba(255, 255, 255, 0.02);
-  position: relative;
-  border: var(--border) solid rgba(255, 255, 255, 0.04);
   display: flex;
   align-items: center;
-  justify-content: center;
+  color: #00ffff;
+  font-size: 8vw;
+  text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+  user-select: none;
 }
 
-.hub {
+.colon {
+  padding: 0 0.3em;
+  animation: pulse 1s infinite alternate;
+}
+
+.digit {
+  position: relative;
+  display: inline-block;
+  width: 2ch;
+  height: 1em;
+  perspective: 800px;
+  transform-style: preserve-3d;
+  margin: 0 0.05em;
+}
+
+.front,
+.back {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: linear-gradient(180deg, #ffffff, #cfd8e3);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-  z-index: 6;
+  width: 100%;
+  height: 100%;
+  line-height: 1em;
+  backface-visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.hand {
-  position: absolute;
-  transform-origin: 50% 100%;
-  left: 50%;
-  top: 50%;
-  translate: -50% -100%;
-  z-index: 5;
+.front {
+  transform: rotateX(0deg);
 }
 
-.hour {
-  width: 6px;
-  height: 80px;
-  background: linear-gradient(180deg, #e6eef9, #7f8fa8);
-  border-radius: 6px 6px 3px 3px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-  z-index: 4;
+.back {
+  transform: rotateX(180deg);
+  color: #00ffff;
 }
 
-.minute {
-  width: 4px;
-  height: 110px;
-  background: linear-gradient(180deg, #eaf2ff, #9fb0c8);
-  border-radius: 4px;
-  z-index: 5;
+.digit.flip .front {
+  transform: rotateX(-180deg);
 }
 
-.second {
-  width: 2px;
-  height: 125px;
-  background: linear-gradient(180deg, #ff6767, #ffbaba);
-  z-index: 6;
+.digit.flip .back {
+  transform: rotateX(0deg);
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulse {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
