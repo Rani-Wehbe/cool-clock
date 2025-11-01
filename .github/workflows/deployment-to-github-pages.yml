@@ -19,7 +19,7 @@ jobs:
     name: Build and deploy site
     runs-on: ubuntu-latest
     env:
-      NODE_VERSION: 18
+      NODE_VERSION: 22
 
     steps:
       - name: Checkout repository
@@ -58,4 +58,3 @@ jobs:
           publish_dir: ${{ env.PUBLISH_DIR }}
           publish_branch: gh-pages
           commit_message: "Deploy Cool Clock from ${{ github.sha }}"
-          
