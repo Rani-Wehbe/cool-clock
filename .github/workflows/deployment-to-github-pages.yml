@@ -1,0 +1,61 @@
+name: Deployment to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: "github-pages-deploy"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy site
+    runs-on: ubuntu-latest
+    env:
+      NODE_VERSION: 18
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Detect publish directory
+        id: detect
+        run: |
+          if [ -d "./dist" ] && [ "$(ls -A ./dist)" ]; then
+            echo "PUBLISH_DIR=dist" >> $GITHUB_ENV
+            echo "Found dist/ — using dist as publish directory"
+          elif [ -d "./build" ] && [ "$(ls -A ./build)" ]; then
+            echo "PUBLISH_DIR=build" >> $GITHUB_ENV
+            echo "Found build/ — using build as publish directory"
+          else
+            echo "::error::No publish directory found. Expected ./dist or ./build."
+            exit 1
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.PUBLISH_DIR }}
+          publish_branch: gh-pages
+          commit_message: "Deploy Cool Clock from ${{ github.sha }}"
+          
